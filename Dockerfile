@@ -12,3 +12,12 @@ RUN node -v
 RUN npm install --global yarn && npm install -g node-gyp 
 
 RUN node -v && npm -v && yarn -v && node-gyp -v
+
+RUN git clone https://gitee.com/its-not-too-late-breeze/code-server.git && \
+  git submodule update --init && \
+  quilt push -a && \
+  yarn
+
+RUN yarn build && \
+  yarn build:vscode && \
+  yarn release
