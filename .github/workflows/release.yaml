@@ -1,0 +1,84 @@
+name: Draft release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write # For creating releases.
+  discussions: write #  For creating a discussion.
+jobs:
+  package-linux-cross:
+    name: Linux cross-compile builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container: "debian:buster"
+    strategy:
+      matrix:
+        include:
+          - prefix: aarch64-linux-gnu
+            npm_arch: arm64
+            apt_arch: arm64
+
+    env:
+      AR: ${{ format('{0}-ar', matrix.prefix) }}
+      AS: ${{ format('{0}-as', matrix.prefix) }}
+      CC: ${{ format('{0}-gcc', matrix.prefix) }}
+      CPP: ${{ format('{0}-cpp', matrix.prefix) }}
+      CXX: ${{ format('{0}-g++', matrix.prefix) }}
+      FC: ${{ format('{0}-gfortran', matrix.prefix) }}
+      LD: ${{ format('{0}-ld', matrix.prefix) }}
+      STRIP: ${{ format('{0}-strip', matrix.prefix) }}
+      PKG_CONFIG_PATH: ${{ format('/usr/lib/{0}/pkgconfig', matrix.prefix) }}
+      TARGET_ARCH: ${{ matrix.apt_arch }}
+      npm_config_arch: ${{ matrix.npm_arch }}
+      NODE_VERSION: v18.15.0
+      # Not building from source results in an x86_64 argon2, as if
+      # npm_config_arch is being ignored.
+      npm_config_build_from_source: true
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Node.js v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.15.0"
+
+      - name: Install cross-compiler and system dependencies
+        run: |
+          dpkg --add-architecture $TARGET_ARCH
+          apt-get update && apt-get install -y --no-install-recommends \
+            crossbuild-essential-$TARGET_ARCH \
+            libx11-dev:$TARGET_ARCH \
+            libx11-xcb-dev:$TARGET_ARCH \
+            libxkbfile-dev:$TARGET_ARCH \
+            libsecret-1-dev:$TARGET_ARCH \
+            libkrb5-dev:$TARGET_ARCH \
+            ca-certificates \
+            curl wget rsync gettext-base
+      - name: yarn
+        run: |
+          git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
+          cd code-server
+          yarn
+      - name: build
+        run: |
+          yarn build
+          yarn build:vscode
+          yarn release
+
+      - name: Build standalone release
+        run: npm run release:standalone
+
+      - name: Replace node with cross-compile equivalent
+        run: |
+          wget https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-${npm_config_arch}.tar.xz
+          tar -xf node-${NODE_VERSION}-linux-${npm_config_arch}.tar.xz node-${NODE_VERSION}-linux-${npm_config_arch}/bin/node --strip-components=2
+          mv ./node ./release-standalone/lib/node
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          discussion_category_name: "📣 Announcements"
+          files: ./release-packages/*
