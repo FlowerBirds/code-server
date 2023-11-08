@@ -32,6 +32,9 @@ jobs:
           context: .
           platforms: linux/amd64
           push: false
+          build-args: |
+           GITEE_USERNAME=${{ secrets.GITEE_USERNAME }}
+           GITEE_PASSWORD=${{ secrets.GITEE_PASSWORD }}
           tags: |
             flowerbirds/code-server:latest
             ghcr.io/flowerbirds/code-server:latest
