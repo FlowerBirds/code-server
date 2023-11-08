@@ -44,7 +44,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18.15.0"
-
+      - run: npm install --global yarn
+      - run: npm install -g node-gyp
       - name: Install cross-compiler and system dependencies
         run: |
           dpkg --add-architecture $TARGET_ARCH
