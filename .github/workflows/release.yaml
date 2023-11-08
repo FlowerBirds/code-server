@@ -65,12 +65,15 @@ jobs:
           yarn
       - name: build
         run: |
+          cd code-server
           yarn build
           yarn build:vscode
           yarn release
 
       - name: Build standalone release
-        run: npm run release:standalone
+        run: |
+          cd code-server
+          yarn release:standalone
 
       - name: Replace node with cross-compile equivalent
         run: |
