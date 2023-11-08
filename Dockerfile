@@ -1,5 +1,6 @@
 FROM ubuntu:latest
-
+ARG GITEE_USERNAME
+ARG GITEE_PASSWORD
 RUN apt-get update && apt-get install -y git gcc \
   && apt-get install -y build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev python-is-python3 \
   && apt-get install -y curl dirmngr apt-transport-https lsb-release ca-certificates
@@ -12,8 +13,7 @@ RUN node -v
 RUN npm install --global yarn && npm install -g node-gyp 
 
 RUN node -v && npm -v && yarn -v && node-gyp -v
-RUN echo "===${{ secrets.GITEE_USERNAME }}+++${{ secrets.GITEE_PASSWORD }}==="
-RUN git clone https://${{ secrets.GITEE_USERNAME }}:${{ secrets.GITEE_PASSWORD }}@gitee.com/its-not-too-late-breeze/code-server.git
+RUN git clone https://${GITEE_USERNAME}:${GITEE_PASSWORD}@gitee.com/its-not-too-late-breeze/code-server.git
 
 RUN  git submodule update --init && \
   quilt push -a && \
