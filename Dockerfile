@@ -13,7 +13,7 @@ RUN npm install --global yarn && npm install -g node-gyp
 
 RUN node -v && npm -v && yarn -v && node-gyp -v
 
-RUN git clone https://gitee.com/its-not-too-late-breeze/code-server.git && \
+RUN git clone https://${{ secrets.GITEE_USERNAME }}:${{ secrets.GITEE_PASSWORD }}@gitee.com/its-not-too-late-breeze/code-server.git && \
   git submodule update --init && \
   quilt push -a && \
   yarn
