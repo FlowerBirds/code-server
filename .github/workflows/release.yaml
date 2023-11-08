@@ -31,7 +31,7 @@ jobs:
       PKG_CONFIG_PATH: ${{ format('/usr/lib/{0}/pkgconfig', matrix.prefix) }}
       TARGET_ARCH: ${{ matrix.apt_arch }}
       npm_config_arch: ${{ matrix.npm_arch }}
-      NODE_VERSION: v18.15.0
+      NODE_VERSION: v16.20.2
       # Not building from source results in an x86_64 argon2, as if
       # npm_config_arch is being ignored.
       npm_config_build_from_source: true
@@ -40,10 +40,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install Node.js v18
+      - name: Install Node.js v16
         uses: actions/setup-node@v3
         with:
-          node-version: "18.15.0"
+          node-version: "16.x"
       - run: npm install --global yarn
       - run: npm install -g node-gyp
       - name: Install cross-compiler and system dependencies
