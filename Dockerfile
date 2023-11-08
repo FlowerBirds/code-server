@@ -2,7 +2,7 @@ FROM ubuntu:latest as build
 
 ARG GITEE_USERNAME
 ARG GITEE_PASSWORD
-RUN apt-get update && apt-get install -y git gcc jq rsync unzip bats gettext-base \
+RUN apt-get update && apt-get install -y git gcc jq rsync unzip bats gettext-base nfpm gnupg quilt \
   && apt-get install -y build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev python-is-python3 \
   && apt-get install -y curl dirmngr apt-transport-https lsb-release ca-certificates
 
