@@ -1,0 +1,26 @@
+name: Build Binary
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: use nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: build-vue
+        run: |
+          npm install -g node-gyp
+          apt-get -y install build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev
+          node-gyp -v
+          yarn -v
+          python -V
+      
+          
