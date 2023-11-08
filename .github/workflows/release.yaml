@@ -9,7 +9,7 @@ permissions:
 jobs:
   package-linux-cross:
     name: Linux cross-compile builds
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 15
     container: "debian:buster"
     strategy:
@@ -56,7 +56,7 @@ jobs:
             libsecret-1-dev:$TARGET_ARCH \
             libkrb5-dev:$TARGET_ARCH \
             ca-certificates \
-            curl wget rsync gettext-base
+            curl wget rsync gettext-base git
       - name: yarn
         run: |
           git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
