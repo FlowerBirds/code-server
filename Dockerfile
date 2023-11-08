@@ -1,7 +1,8 @@
-FROM ubuntu:latest
+FROM ubuntu:latest as build
+
 ARG GITEE_USERNAME
 ARG GITEE_PASSWORD
-RUN apt-get update && apt-get install -y git gcc jq rsync unzip bats  \
+RUN apt-get update && apt-get install -y git gcc jq rsync unzip bats gettext-base \
   && apt-get install -y build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev python-is-python3 \
   && apt-get install -y curl dirmngr apt-transport-https lsb-release ca-certificates
 
@@ -23,3 +24,9 @@ RUN cd code-server && \
   yarn release:standalone && \
   yarn test:integration && \
   yarn package
+
+FROM alpine:latest as ship
+COPY --from=build /code-server/release-packages/*.tar.gz /
+CMD ["top"]
+
+  
