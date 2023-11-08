@@ -57,7 +57,7 @@ jobs:
             libsecret-1-dev:$TARGET_ARCH \
             libkrb5-dev:$TARGET_ARCH \
             ca-certificates \
-            curl wget rsync gettext-base git
+            curl wget rsync gettext-base git jq unzip bats 
       - name: yarn
         run: |
           git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
