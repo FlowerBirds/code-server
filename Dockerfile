@@ -15,7 +15,11 @@ RUN npm install --global yarn && npm install -g node-gyp
 RUN node -v && npm -v && yarn -v && node-gyp -v
 RUN git clone https://${GITEE_USERNAME}:${GITEE_PASSWORD}@gitee.com/its-not-too-late-breeze/code-server.git
 
-RUN yarn && \
+RUN cd code-server && \
+  yarn && \
   yarn build && \
   yarn build:vscode && \
-  yarn release
+  yarn release && \
+  yarn release:standalone && \
+  yarn test:integration && \
+  yarn package
