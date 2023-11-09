@@ -116,3 +116,68 @@ jobs:
           files: ./code-server/release-packages/*
           name: v4.7.0
           tag_name: v4.7.0
+  
+  package-linux-amd64:
+    name: x86-64 Linux build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+    container: "centos:8"
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Node.js v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install development tools
+        run: |
+          cd /etc/yum.repos.d/
+          sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+          sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+          yum install -y gcc-c++ make jq rsync python3 libsecret-devel krb5-devel git
+
+      - name: Clone
+        run: |
+          git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
+      - run: npm install --global yarn
+      - run: npm install -g node-gyp
+      
+      - name: Download artifacts
+        uses: dawidd6/action-download-artifact@v2
+        id: download
+        with:
+          workflow: build-artifact.yml
+          workflow_conclusion: completed
+          name: npm-package
+          check_artifacts: false
+          if_no_artifact_found: fail
+
+      - name: Decompress npm package
+        working-directory: ./code-server
+        run: |
+          mv ../package.tar.gz ./
+          tar -xzf package.tar.gz
+
+      - name: Build standalone release
+        working-directory: ./code-server
+        run: yarn run release:standalone
+
+      - name: Build packages with nfpm
+        env:
+          VERSION: ${{ env.VERSION }}
+        run: yarn package
+
+      - uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
+          discussion_category_name: "📣 Announcements"
+          files: ./code-server/release-packages/*
+          name: v4.7.0
+          tag_name: v4.7.0
