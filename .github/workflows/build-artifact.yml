@@ -19,7 +19,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: "yarn"
           
       - name: Install system dependencies
         run:  sudo apt update && sudo apt install -y libkrb5-dev ca-certificates curl wget rsync gettext-base git jq unzip bats 
