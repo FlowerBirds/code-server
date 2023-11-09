@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Install system dependencies
-        run:  apt update &&  apt install -y libkrb5-dev ca-certificates curl wget rsync gettext-base git jq unzip bats 
+        run:  sudo apt update && sudo apt install -y libkrb5-dev ca-certificates curl wget rsync gettext-base git jq unzip bats 
       - name: Clone
         run: git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
       - name: Fetch dependencies from cache
