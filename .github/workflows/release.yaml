@@ -94,4 +94,4 @@ jobs:
         with:
           draft: true
           discussion_category_name: "📣 Announcements"
-          files: ./release-packages/*
+          files: code-server/release-packages/*
