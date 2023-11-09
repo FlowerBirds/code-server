@@ -76,7 +76,9 @@ jobs:
         working-directory: ./code-server
         run: |
           mv ../package.tar.gz ./
+          ls -l
           tar -xzf package.tar.gz
+          ls -l
 
       - name: Build standalone release
         working-directory: ./code-server
