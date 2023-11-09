@@ -40,7 +40,7 @@ jobs:
       - name: Install Node.js v16
         uses: actions/setup-node@v3
         with:
-          node-version: "16.20.2"
+          node-version: "16"
 
       - name: Install cross-compiler and system dependencies
         run: |
