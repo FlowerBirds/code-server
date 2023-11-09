@@ -1,4 +1,4 @@
-name: Draft artifact
+name: Build and Upload Artifact
 
 on:
   workflow_dispatch:
@@ -12,7 +12,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Install system dependencies
-        run: sudo apt update && sudo apt install -y libkrb5-dev
+        run:  apt update &&  apt install -y libkrb5-dev ca-certificates curl wget rsync gettext-base git jq unzip bats 
+      - name: Clone
+        run: git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
       - name: Fetch dependencies from cache
         id: cache-node-modules
         uses: actions/cache@v3
@@ -22,10 +24,12 @@ jobs:
           restore-keys: |
             yarn-build-code-server-
       - name: Install dependencies
+        working-directory: ./code-server
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn --frozen-lockfile
 
       - name: Build code-server
+        working-directory: ./code-server
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn build
@@ -33,10 +37,11 @@ jobs:
         id: cache-vscode
         uses: actions/cache@v3
         with:
-          path: lib/vscode-reh-web-*
+          path: code-server/lib/vscode-reh-web-*
           key: vscode-reh-package-${{ secrets.VSCODE_CACHE_VERSION }}-${{ steps.vscode-rev.outputs.rev }}-${{ hashFiles('patches/*.diff', 'ci/build/build-vscode.sh') }}
 
       - name: Build vscode
+        working-directory: ./code-server
         env:
           VERSION: "0.0.0"
         if: steps.cache-vscode.outputs.cache-hit != 'true'
@@ -45,16 +50,18 @@ jobs:
       # The release package does not contain any native modules
       # and is neutral to architecture/os/libc version.
       - name: Create release package
+        working-directory: ./code-server
         run: yarn release
         if: success()
 
       # https://github.com/actions/upload-artifact/issues/38
       - name: Compress release package
+        working-directory: ./code-server
         run: tar -czf package.tar.gz release
 
       - name: Upload npm package artifact
         uses: actions/upload-artifact@v3
         with:
           name: npm-package
-          path: ./package.tar.gz
+          path: ./code-server/package.tar.gz
       
