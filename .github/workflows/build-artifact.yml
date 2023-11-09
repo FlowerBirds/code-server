@@ -16,6 +16,8 @@ jobs:
       - name: Clone
         run: |
           git config lfs.https://gitee.com/its-not-too-late-breeze/code-server.git/info/lfs.locksverify false
+          git config --global filter.lfs.smudge "git-lfs smudge --skip %f"
+          git config --global filter.lfs.process "git-lfs filter-process --skip"
           git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
       - name: Fetch dependencies from cache
         id: cache-node-modules
