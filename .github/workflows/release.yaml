@@ -79,6 +79,9 @@ jobs:
         run: |
           wget https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-${npm_config_arch}.tar.xz
           tar -xf node-${NODE_VERSION}-linux-${npm_config_arch}.tar.xz node-${NODE_VERSION}-linux-${npm_config_arch}/bin/node --strip-components=2
+          ls -l .
+          ls -l code-server/release-standalone
+          ls -l code-server/release-packages
           mv ./node code-server/release-standalone/lib/node
 
       - uses: softprops/action-gh-release@v1
