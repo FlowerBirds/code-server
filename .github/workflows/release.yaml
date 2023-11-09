@@ -10,7 +10,7 @@ jobs:
   package-linux-cross:
     name: Linux cross-compile builds
     runs-on: ubuntu-20.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     container: "debian:buster"
     strategy:
       matrix:
