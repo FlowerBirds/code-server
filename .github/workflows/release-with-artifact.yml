@@ -58,7 +58,9 @@ jobs:
       - name: Clone
         run: |
           git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
-
+      - run: npm install --global yarn
+      - run: npm install -g node-gyp
+      
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@v2
         id: download
