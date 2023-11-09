@@ -108,10 +108,11 @@ jobs:
         run: npm run package ${npm_config_arch}
 
       - uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
           discussion_category_name: "📣 Announcements"
           files: ./code-server/release-packages/*
           name: v4.7.0
           tag_name: v4.7.0
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
