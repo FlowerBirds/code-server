@@ -84,6 +84,11 @@ jobs:
           ls -l ./node
           ls -l code-server/release-standalone/lib/node
           mv ./node code-server/release-standalone/lib/node
+          
+      - name: Package Release
+        run: |
+          cd code-server
+          yarn package
 
       - uses: softprops/action-gh-release@v1
         with:
