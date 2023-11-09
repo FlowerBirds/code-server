@@ -2,7 +2,11 @@ name: Release with artifact
 
 on:
   workflow_dispatch:
-
+  
+permissions:
+  contents: write
+  discussions: write
+  
 jobs:
   package-linux-cross:
     name: Linux cross-compile builds
@@ -110,3 +114,4 @@ jobs:
           files: ./code-server/release-packages/*
           name: v4.7.0
           tag_name: v4.7.0
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
