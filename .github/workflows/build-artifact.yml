@@ -1,0 +1,60 @@
+name: Draft artifact
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build code-server
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: sudo apt update && sudo apt install -y libkrb5-dev
+      - name: Fetch dependencies from cache
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: "**/node_modules"
+          key: yarn-build-code-server-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            yarn-build-code-server-
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile
+
+      - name: Build code-server
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn build
+      - name: Fetch prebuilt Code package from cache
+        id: cache-vscode
+        uses: actions/cache@v3
+        with:
+          path: lib/vscode-reh-web-*
+          key: vscode-reh-package-${{ secrets.VSCODE_CACHE_VERSION }}-${{ steps.vscode-rev.outputs.rev }}-${{ hashFiles('patches/*.diff', 'ci/build/build-vscode.sh') }}
+
+      - name: Build vscode
+        env:
+          VERSION: "0.0.0"
+        if: steps.cache-vscode.outputs.cache-hit != 'true'
+        run: yarn build:vscode
+
+      # The release package does not contain any native modules
+      # and is neutral to architecture/os/libc version.
+      - name: Create release package
+        run: yarn release
+        if: success()
+
+      # https://github.com/actions/upload-artifact/issues/38
+      - name: Compress release package
+        run: tar -czf package.tar.gz release
+
+      - name: Upload npm package artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: npm-package
+          path: ./package.tar.gz
+      
