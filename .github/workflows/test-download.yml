@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Download test reports
-        uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v2
         with:
           branch: ${{ github.ref }}
           workflow: build-artifact.yml
