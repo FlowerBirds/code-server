@@ -82,7 +82,7 @@ jobs:
 
       - name: Build standalone release
         working-directory: ./code-server
-        run: npm run release:standalone
+        run: yarn run release:standalone
 
       - name: Replace node with cross-compile equivalent
         working-directory: ./code-server
