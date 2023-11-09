@@ -9,6 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: npm-package
+          path: ./
+      - name: 'Echo download path'
+        run: echo ${{steps.download.outputs.download-path}}
+        
       - name: Download test reports
         uses: dawidd6/action-download-artifact@v2
         with:
