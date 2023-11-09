@@ -1,0 +1,20 @@
+name: Test download
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reports:
+    name: Report Test Coverages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download test reports
+        uses: actions/download-artifact@v3
+        with:
+          name: npm-packages
+
+      - name: Submit to CodeClimate
+        run: |
+          curl -LSs $CC_TEST_REPORTER_URL > ./cc-test-reporter && chmod +x ./cc-test-reporter
+          ./cc-test-reporter sum-coverage -o - reports/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
