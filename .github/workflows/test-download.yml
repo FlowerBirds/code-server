@@ -19,7 +19,6 @@ jobs:
       - name: Download test reports
         uses: dawidd6/action-download-artifact@v2
         with:
-          branch: ${{ github.ref }}
           workflow_conclusion: completed
           name: npm-package
           check_artifacts: false
