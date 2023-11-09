@@ -81,7 +81,8 @@ jobs:
           tar -xf node-${NODE_VERSION}-linux-${npm_config_arch}.tar.xz node-${NODE_VERSION}-linux-${npm_config_arch}/bin/node --strip-components=2
           ls -l .
           ls -l code-server/release-standalone
-          ls -l code-server/release-packages
+          ls -l ./node
+          ls -l code-server/release-standalone/lib/node
           mv ./node code-server/release-standalone/lib/node
 
       - uses: softprops/action-gh-release@v1
