@@ -19,6 +19,7 @@ jobs:
       - name: Download test reports
         uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: build-artifact.yml
           workflow_conclusion: completed
           name: npm-package
           check_artifacts: false
