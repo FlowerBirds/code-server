@@ -65,7 +65,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         id: download
         with:
-          branch: main
+          branch: ${{ github.ref }}
           workflow: build-artifact.yml
           workflow_conclusion: completed
           name: npm-package
