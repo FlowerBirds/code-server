@@ -64,7 +64,7 @@ jobs:
         id: download
         with:
           branch: ${{ github.ref }}
-          workflow: build-artifact.yaml
+          workflow: build-artifact.yml
           workflow_conclusion: completed
           name: npm-package
           check_artifacts: false
