@@ -12,7 +12,11 @@ jobs:
       - name: Download test reports
         uses: actions/download-artifact@v3
         with:
-          name: npm-packages
+          branch: ${{ github.ref }}
+          workflow: build-artifact.yml
+          workflow_conclusion: completed
+          name: npm-package
+          check_artifacts: false
 
       - name: Submit to CodeClimate
         run: |
