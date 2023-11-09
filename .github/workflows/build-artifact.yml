@@ -3,6 +3,9 @@ name: Build and Upload Artifact
 on:
   workflow_dispatch:
 
+#          git config lfs.https://gitee.com/its-not-too-late-breeze/code-server.git/info/lfs.locksverify false
+#          git config --global filter.lfs.smudge "git-lfs smudge --skip %f"
+#          git config --global filter.lfs.process "git-lfs filter-process --skip"
 jobs:
   build:
     name: Build code-server
@@ -11,13 +14,16 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Install Node.js v16
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
       - name: Install system dependencies
         run:  sudo apt update && sudo apt install -y libkrb5-dev ca-certificates curl wget rsync gettext-base git jq unzip bats 
       - name: Clone
         run: |
-          git config lfs.https://gitee.com/its-not-too-late-breeze/code-server.git/info/lfs.locksverify false
-          git config --global filter.lfs.smudge "git-lfs smudge --skip %f"
-          git config --global filter.lfs.process "git-lfs filter-process --skip"
           git clone https://${{secrets.GITEE_USERNAME}}:${{secrets.GITEE_PASSWORD}}@gitee.com/its-not-too-late-breeze/code-server.git
       - name: Fetch dependencies from cache
         id: cache-node-modules
