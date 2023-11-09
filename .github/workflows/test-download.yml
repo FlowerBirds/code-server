@@ -12,7 +12,6 @@ jobs:
       - uses: actions/download-artifact@v3
         id: download
         with:
-          name: npm-package
           path: ./
       - name: 'Echo download path'
         run: echo ${{steps.download.outputs.download-path}}
